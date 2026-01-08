@@ -139,7 +139,294 @@
 </head>
 <body>
     <div class="container">
-        <h1> PhoneNo. To QR Generator</h1>
+        <h1> <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: clamp(22px, 5vw, 28px);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: clamp(12px, 3vw, 14px);
+            padding: 0 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: clamp(14px, 4vw, 16px);
+            transition: border-color 0.3s;
+        }
+
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: clamp(14px, 4vw, 16px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            min-height: 200px;
+        }
+
+        #qrcode img,
+        #qrcode canvas {
+            max-width: 100%;
+            height: auto !important;
+            width: auto !important;
+        }
+
+        .qr-placeholder {
+            color: #999;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: clamp(12px, 3.5vw, 14px);
+            color: #333;
+            line-height: 1.5;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 25px 15px;
+                border-radius: 15px;
+            }
+
+            .input-group {
+                margin-bottom: 15px;
+            }
+
+            button {
+                padding: 12px;
+            }
+
+            #qrcode {
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            .info-box {
+                padding: 10px;
+                margin-top: 15px;
+            }
+        }
+
+        /* Tablet and larger screens */
+        @media (min-width: 481px) {
+            .container {
+                padding: 40px;
+            }
+        }
+
+        /* Ensure touch targets are large enough on mobile */
+        @media (max-width: 768px) {
+            button, input[type="tel"] {
+                min-height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PhoneNo. to QR Generator</h1>
+        <p class="subtitle">Generate a scannable QR code for any phone number</p>
+        
+        <div class="input-group">
+            <label for="phoneInput">Enter Phone Number:</label>
+            <input 
+                type="tel" 
+                id="phoneInput" 
+                placeholder="e.g., +1234567890"
+                autocomplete="tel"
+            >
+            <div class="error" id="error">Please enter a valid phone number</div>
+        </div>
+
+        <button onclick="generateQR()">Generate QR Code</button>
+
+        <div class="success-message" id="successMsg">
+            QR Code generated successfully! Scan it to call this number.
+        </div>
+
+        <div id="qrcode">
+            <div class="qr-placeholder">Your QR code will appear here</div>
+        </div>
+
+        <div class="info-box">
+            💡 <strong>Tip:</strong> Include the country code (e.g., +1 for US) for best results. When scanned, the QR code will open the phone dialer with this number.
+        </div>
+    </div>
+
+    <script>
+        let qrcode = null;
+
+        function validatePhone(phone) {
+            // Remove all spaces and dashes
+            const cleaned = phone.replace(/[\s-]/g, '');
+            // Check if it contains only digits and optional + at start
+            return /^\+?[0-9]{7,15}$/.test(cleaned);
+        }
+
+        function generateQR() {
+            const phoneInput = document.getElementById('phoneInput');
+            const errorDiv = document.getElementById('error');
+            const successMsg = document.getElementById('successMsg');
+            const qrcodeDiv = document.getElementById('qrcode');
+            const phone = phoneInput.value.trim();
+
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            // Validate input
+            if (!phone) {
+                errorDiv.textContent = 'Please enter a phone number';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (!validatePhone(phone)) {
+                errorDiv.textContent = 'Please enter a valid phone number (7-15 digits, optional + prefix)';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Clear previous QR code
+            qrcodeDiv.innerHTML = '';
+
+            // Format phone number for tel: URI
+            const cleanPhone = phone.replace(/[\s-]/g, '');
+            const telUri = `tel:${cleanPhone}`;
+
+            // Generate new QR code
+            const qrSize = window.innerWidth < 480 ? 180 : 200;
+            qrcode = new QRCode(qrcodeDiv, {
+                text: telUri,
+                width: qrSize,
+                height: qrSize,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Show success message
+            successMsg.style.display = 'block';
+        }
+
+        // Allow Enter key to generate QR
+        document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateQR();
+            }
+        });
+    </script>
+</body>
+</html></h1>
         <p class="subtitle">Generate a scannable QR code for any phone number</p>
         
         <div class="input-group">
